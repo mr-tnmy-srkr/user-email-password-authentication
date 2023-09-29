@@ -3,6 +3,7 @@ import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { AiFillEye } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [registerError, setRegisterError] = useState("");
@@ -116,6 +117,7 @@ const Register = () => {
           {registrationSuccess && (
             <p className="text-green-600">{registrationSuccess}</p>
           )}
+          <p>Already aave an account? please <Link to="/login" className="underline">Login</Link></p>
         </div>
       </div>
     </div>
