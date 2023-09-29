@@ -10,11 +10,13 @@ const Register = () => {
   const [registrationSuccess, setRegistrationSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+
   const handleRegister = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
+    const accepted = e.target.terms.checked;
+    console.log(email, password,accepted);
 
     //reset error
     setRegisterError("");
@@ -28,6 +30,11 @@ const Register = () => {
       return setRegisterError(
         "Your password should be at least one upper case character."
       );
+    }else if(!accepted){
+      setRegisterError(
+        "Please accept our T&C"
+      );
+      return;
     }
 
     //create user
@@ -51,13 +58,13 @@ const Register = () => {
   };
 
   return (
-    <div className="w-[60vw] mx-auto">
-      <div className="mx-auto">
-        <h2 className="text-3xl my-4">Register</h2>
-        <div>
+    <div className="w-[60vw] mt-24 mx-auto">
+      <div className="mx-auto ">
+        <h2 className="text-3xl text-center my-4">Register Now</h2>
+        <div className="">
           <form onSubmit={handleRegister}>
             <input
-              className="mb-4 w-3/4 py-2 px-4"
+              className="mb-4 w-full py-2 px-4 rounded-lg"
               type="email"
               name="email"
               id=""
@@ -65,27 +72,42 @@ const Register = () => {
               required
             />
             <br />
-            <input
-              className="mb-4 w-3/4 py-2 px-4 relative"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              id=""
-              placeholder="password"
-              required
-            />
-            <span onClick={() => setShowPassword(!showPassword)} className="text-2xl absolute top-[31%] right-[36%]">
-              {showPassword ? (
-                <AiFillEyeInvisible></AiFillEyeInvisible>
-              ) : (
-                <AiFillEye></AiFillEye>
-              )}
-            </span>
-            <br />
-            <input
-              className="mb-4 w-3/4 btn btn-secondary"
-              type="submit"
-              value="Register"
-            />
+            <div className="relative">
+              <input
+                className="mb-4 w-full py-2 px-4  rounded-lg"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id=""
+                placeholder="Enter password"
+                required
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-2xl absolute top-[15%] right-[3%]"
+              >
+                {showPassword ? (
+                  <AiFillEyeInvisible></AiFillEyeInvisible>
+                ) : (
+                  <AiFillEye></AiFillEye>
+                )}
+              </span>
+            </div>
+
+            <div className="
+            mb-3">
+              <input type="checkbox" name="terms" id="terms" />
+              <label htmlFor="terms" className="ml-2">
+                <a href="">Accept our t&c</a>
+              </label>
+            </div>
+
+            <div>
+              <input
+                className="mb-4 w-full btn btn-secondary"
+                type="submit"
+                value="Register"
+              />
+            </div>
           </form>
           {errorCode && <p className="text-yellow-800">Error: {errorCode}</p>}
 
