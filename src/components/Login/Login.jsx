@@ -1,4 +1,7 @@
-import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -29,7 +32,11 @@ const Login = () => {
         // const user = userCredential.user;
         // ...
         console.log(result.user);
-        setRegistrationSuccess("Logged in successful");
+        if (result.user.emailVerified) {
+          setRegistrationSuccess("Logged in successful");
+        } else {
+          alert("please verify your email address");
+        }
       })
       .catch((error) => {
         // const errorCode = error.code;
@@ -43,19 +50,21 @@ const Login = () => {
   //reset password
   const handleForgetPassword = () => {
     const email = emailRef.current.value;
-    if(!email){
-        console.log('please provide an email', emailRef.current.value);
-        return;
-    }else if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){
-console.log('please a valid email');
+    if (!email) {
+      console.log("please provide an email", emailRef.current.value);
+      return;
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      console.log("please a valid email");
     }
 
     //send validation email
     sendPasswordResetEmail(auth, email)
-    .then(() => {
+      .then(() => {
         // Password reset email sent!
         // ..
-        alert("please check your email")
+        alert("please check your email");
       })
       .catch((error) => {
         // const errorCode = error.code;

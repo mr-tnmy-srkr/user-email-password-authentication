@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { AiFillEyeInvisible } from "react-icons/ai";
@@ -11,13 +15,13 @@ const Register = () => {
   const [registrationSuccess, setRegistrationSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-
   const handleRegister = (e) => {
     e.preventDefault();
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const accepted = e.target.terms.checked;
-    console.log(email, password,accepted);
+    console.log(name,email, password, accepted);
 
     //reset error
     setRegisterError("");
@@ -31,10 +35,8 @@ const Register = () => {
       return setRegisterError(
         "Your password should be at least one upper case character."
       );
-    }else if(!accepted){
-      setRegisterError(
-        "Please accept our T&C"
-      );
+    } else if (!accepted) {
+      setRegisterError("Please accept our T&C");
       return;
     }
 
@@ -46,7 +48,21 @@ const Register = () => {
         console.log(result.user);
         setRegistrationSuccess("User created successfully");
 
-        // ...
+// update profile
+updateProfile(result.user, {
+  displayName: name, photoURL: "https://example.com/jane-q-user/profile.jpg"
+}).then(() => {
+  // Profile updated!
+  console.log('profile updated');
+}).catch((error) => {
+  // An error occurred
+  console.log(error);
+});
+
+        // send verification email
+        sendEmailVerification(result.user).then(() => {
+          alert("please check your email and verify your account");
+        });
       })
       .catch((error) => {
         // const errorCode = error.code;
@@ -64,6 +80,15 @@ const Register = () => {
         <h2 className="text-3xl text-center my-4">Register Now</h2>
         <div className="">
           <form onSubmit={handleRegister}>
+          <input
+              className="mb-4 w-full py-2 px-4 rounded-lg"
+              type="text"
+              name="name"
+              id=""
+              placeholder="Enter your name"
+              required
+            />
+          <br />
             <input
               className="mb-4 w-full py-2 px-4 rounded-lg"
               type="email"
@@ -94,8 +119,10 @@ const Register = () => {
               </span>
             </div>
 
-            <div className="
-            mb-3">
+            <div
+              className="
+            mb-3"
+            >
               <input type="checkbox" name="terms" id="terms" />
               <label htmlFor="terms" className="ml-2">
                 <a href="">Accept our t&c</a>
@@ -117,7 +144,12 @@ const Register = () => {
           {registrationSuccess && (
             <p className="text-green-600">{registrationSuccess}</p>
           )}
-          <p>Already aave an account? please <Link to="/login" className="underline">Login</Link></p>
+          <p>
+            Already <h5></h5>ave an account? please{" "}
+            <Link to="/login" className="underline">
+              Login
+            </Link>
+          </p>
         </div>
       </div>
     </div>
